@@ -30,7 +30,6 @@ public class LibraryService {
 
         book.setMember(member);
         member.getBooks().add(book);
-        bookRepository.save(book);
     }
 
     @Transactional
@@ -43,6 +42,5 @@ public class LibraryService {
         Member member = book.getMember();
         member.getBooks().remove(book);
         book.setMember(null);
-        bookRepository.save(book);
     }
 }

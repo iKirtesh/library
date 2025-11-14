@@ -23,9 +23,8 @@ public class BookService {
 
     @Transactional
     public BookResponse addBook(BookRequest bookRequest) {
-        Book book = modelMapper.map(bookRequest, Book.class);
-        book = bookRepository.save(book);
-        return convertToDto(book);
+		Book book = modelMapper.map(bookRequest, Book.class);
+		return convertToDto(bookRepository.save(book));
     }
 
     public List<BookResponse> getAllBooks() {
@@ -41,19 +40,18 @@ public class BookService {
 
     @Transactional
     public BookResponse updateBook(Long id, BookRequest bookRequest) {
-        Book book = findBookById(id);
-        modelMapper.map(bookRequest, book);
-        book = bookRepository.save(book);
-        return convertToDto(book);
-    }
+		Book book = findBookById(id);
+		modelMapper.map(bookRequest, book);
+		return convertToDto(book);
+	}
 
     @Transactional
     public void deleteBook(Long id) {
-        Book book = findBookById(id);
-        if (book.getMember() != null) {
-            throw new IllegalStateException("Cannot delete a book that is currently issued");
-        }
-        bookRepository.delete(book);
+		Book book = findBookById(id);
+		if (book.getMember() != null) {
+			throw new IllegalStateException("Cannot delete a book that is currently issued");
+		}
+		bookRepository.delete(book);
     }
 
     public List<BookResponse> getBooksByCategory(Category category) {
