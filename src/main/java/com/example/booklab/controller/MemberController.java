@@ -19,24 +19,27 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberResponse> addMember(@Valid @RequestBody MemberRequest memberRequest) {
-        MemberResponse response = memberService.addMember(memberRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    @ResponseStatus(HttpStatus.CREATED)
+    public MemberResponse addMember(@Valid @RequestBody MemberRequest memberRequest) {
+        return memberService.addMember(memberRequest);
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberResponse>> getAllMembers() {
-        return ResponseEntity.ok(memberService.getAllMembers());
+    @ResponseStatus(HttpStatus.OK)
+    public List<MemberResponse> getAllMembers() {
+        return memberService.getAllMembers();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponse> getMemberById(@PathVariable Long id) {
-        return ResponseEntity.ok(memberService.getMemberById(id));
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse getMemberById(@PathVariable Long id) {
+        return memberService.getMemberById(id);
     }
 
     @GetMapping("/{id}/books")
-    public ResponseEntity<List<BookResponse>> getBorrowedBooks(@PathVariable Long id) {
-        return ResponseEntity.ok(memberService.getBorrowedBooks(id));
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookResponse> getBorrowedBooks(@PathVariable Long id) {
+        return memberService.getBorrowedBooks(id);
     }
 
     @DeleteMapping("/{id}")

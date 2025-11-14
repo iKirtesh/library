@@ -19,31 +19,33 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<BookResponse> addBook(@Valid @RequestBody BookRequest bookRequest) {
-        BookResponse response = bookService.addBook(bookRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookResponse addBook(@Valid @RequestBody BookRequest bookRequest) {
+        return bookService.addBook(bookRequest);
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponse>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getAllBooks());
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookResponse> getAllBooks() {
+        return bookService.getAllBooks();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookResponse> getBookById(@PathVariable Long id) {
-        return ResponseEntity.ok(bookService.getBookById(id));
+    @ResponseStatus(HttpStatus.OK)
+    public BookResponse getBookById(@PathVariable Long id) {
+        return bookService.getBookById(id);
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<BookResponse>> getBooksByCategory(@PathVariable Category category) {
-        return ResponseEntity.ok(bookService.getBooksByCategory(category));
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookResponse> getBooksByCategory(@PathVariable Category category) {
+        return bookService.getBooksByCategory(category);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookResponse> updateBook(
-            @PathVariable Long id,
-            @Valid @RequestBody BookRequest bookRequest) {
-        return ResponseEntity.ok(bookService.updateBook(id, bookRequest));
+    @ResponseStatus(HttpStatus.OK)
+    public BookResponse updateBook(@PathVariable Long id, @Valid @RequestBody BookRequest bookRequest) {
+        return bookService.updateBook(id, bookRequest);
     }
 
     @DeleteMapping("/{id}")

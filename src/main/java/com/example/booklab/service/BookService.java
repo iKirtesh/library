@@ -8,11 +8,11 @@ import com.example.booklab.model.Category;
 import com.example.booklab.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +21,17 @@ public class BookService {
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
 
-    @Transactional
     public BookResponse addBook(BookRequest bookRequest) {
-		Book book = modelMapper.map(bookRequest, Book.class);
-		return convertToDto(bookRepository.save(book));
+        Book book = modelMapper.map(bookRequest, Book.class);
+        if (bookRepository.findByTitle(book.getTitle()).isPresent()) {
+            throw new IllegalStateException("A book with title " + book.getTitle() + " already exists.");
+        }
+        return convertToDto(bookRepository.save(book));
     }
 
     public List<BookResponse> getAllBooks() {
         return bookRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+                .map(this::convertToDto).toList();
     }
 
     public BookResponse getBookById(Long id) {
@@ -56,8 +57,7 @@ public class BookService {
 
     public List<BookResponse> getBooksByCategory(Category category) {
         return bookRepository.findByCategory(category).stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+                .map(this::convertToDto).toList();
     }
 
     Book findBookById(Long id) {

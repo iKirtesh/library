@@ -5,7 +5,6 @@ import com.example.booklab.dto.MemberRequest;
 import com.example.booklab.dto.MemberResponse;
 import com.example.booklab.exception.ResourceNotFoundException;
 import com.example.booklab.model.Member;
-import com.example.booklab.model.MembershipType;
 import com.example.booklab.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +23,12 @@ public class MemberService {
     @Transactional
     public MemberResponse addMember(MemberRequest memberRequest) {
         Member member = modelMapper.map(memberRequest, Member.class);
-        member.setMembershipType(MembershipType.REGULAR);
-        member = memberRepository.save(member);
-        return convertToDto(member);
+        return convertToDto(memberRepository.save(member));
     }
 
     public List<MemberResponse> getAllMembers() {
         return memberRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+                .map(this::convertToDto).toList();
     }
 
     public MemberResponse getMemberById(Long id) {
@@ -53,8 +48,7 @@ public class MemberService {
     public List<BookResponse> getBorrowedBooks(Long memberId) {
         Member member = findMemberById(memberId);
         return member.getBooks().stream()
-                .map(bookService::convertToDto)
-                .collect(Collectors.toList());
+                .map(bookService::convertToDto).toList();
     }
 
     private Member findMemberById(Long id) {
@@ -66,8 +60,7 @@ public class MemberService {
         MemberResponse response = modelMapper.map(member, MemberResponse.class);
         response.setBorrowedBooks(
             member.getBooks().stream()
-                .map(bookService::convertToDto)
-                .collect(Collectors.toList())
+                .map(bookService::convertToDto).toList()
         );
         return response;
     }
